@@ -1,0 +1,190 @@
+/* 主导航栏 */
+.main-navigation {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.main-navigation:hover {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.nav-brand {
+    font-size: 1.5rem;
+    margin-right: 10px;
+}
+
+.brand-icon {
+    animation: rotate 10s linear infinite;
+    display: inline-block;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.nav-sections {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+.nav-sections::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.nav-group {
+    display: flex;
+    gap: 5px;
+    padding: 0 10px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nav-group:last-child {
+    border-right: none;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.nav-btn:hover::before {
+    width: 100px;
+    height: 100px;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.nav-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-icon {
+    font-size: 1.2rem;
+}
+
+.btn-label {
+    white-space: nowrap;
+}
+
+.action-btn {
+    padding: 8px;
+}
+
+/* 响应式导航 */
+@media (max-width: 1024px) {
+    .main-navigation {
+        top: 10px;
+        padding: 8px 15px;
+        gap: 10px;
+    }
+
+    .nav-sections {
+        gap: 10px;
+    }
+
+    .btn-label {
+        display: none;
+    }
+
+    .nav-group {
+        padding: 0 5px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-navigation {
+        width: calc(100% - 20px);
+        left: 10px;
+        right: 10px;
+        transform: none;
+        justify-content: space-between;
+        padding: 8px 12px;
+    }
+
+    .nav-brand {
+        display: none;
+    }
+
+    .nav-sections {
+        flex: 1;
+        justify-content: flex-start;
+        margin: 0 10px;
+        padding: 0 5px;
+        cursor: grab;
+        user-select: none;
+    }
+    
+    .nav-sections:active {
+        cursor: grabbing;
+    }
+
+    .nav-group {
+        border-right: none;
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    .nav-actions {
+        margin-left: 0;
+        flex-shrink: 0;
+    }
+}

@@ -1,0 +1,493 @@
+{
+  "description": "照片列表配置文件 - 由generate-list.py自动生成",
+  "generated_at": "2026-06-01 11:41:30",
+  "total_photos": 54,
+  "photos": [
+    {
+      "id": "photo_001",
+      "url": "photos/2_1.jpg",
+      "title": "2_1",
+      "date": "2026-05-25",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_002",
+      "url": "photos/635A4760.jpg",
+      "title": "635A4760",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_003",
+      "url": "photos/635A4767.jpg",
+      "title": "635A4767",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_004",
+      "url": "photos/635A4769.jpg",
+      "title": "635A4769",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_005",
+      "url": "photos/635A4770.jpg",
+      "title": "635A4770",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_006",
+      "url": "photos/635A4774.jpg",
+      "title": "635A4774",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_007",
+      "url": "photos/635A4780.jpg",
+      "title": "635A4780",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_008",
+      "url": "photos/635A4793.jpg",
+      "title": "635A4793",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_009",
+      "url": "photos/635A4798.jpg",
+      "title": "635A4798",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_010",
+      "url": "photos/635A4802.jpg",
+      "title": "635A4802",
+      "date": "2026-05-25",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_011",
+      "url": "photos/635A4805.jpg",
+      "title": "635A4805",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_012",
+      "url": "photos/635A4806.jpg",
+      "title": "635A4806",
+      "date": "2026-05-26",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_013",
+      "url": "photos/635A4808.jpg",
+      "title": "635A4808",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_014",
+      "url": "photos/635A4811.jpg",
+      "title": "635A4811",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_015",
+      "url": "photos/635A4821.jpg",
+      "title": "635A4821",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_016",
+      "url": "photos/635A4831.jpg",
+      "title": "635A4831",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_017",
+      "url": "photos/635A4836.jpg",
+      "title": "635A4836",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_018",
+      "url": "photos/635A4853.jpg",
+      "title": "635A4853",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_019",
+      "url": "photos/635A4866.jpg",
+      "title": "635A4866",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_020",
+      "url": "photos/635A4869.jpg",
+      "title": "635A4869",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_021",
+      "url": "photos/635A4876.jpg",
+      "title": "635A4876",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_022",
+      "url": "photos/635A4878.jpg",
+      "title": "635A4878",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_023",
+      "url": "photos/635A4891.jpg",
+      "title": "635A4891",
+      "date": "2026-05-26",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_024",
+      "url": "photos/635A4894.jpg",
+      "title": "635A4894",
+      "date": "2026-05-26",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_025",
+      "url": "photos/635A4910.jpg",
+      "title": "635A4910",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_026",
+      "url": "photos/635A4923.CR3.jpg",
+      "title": "635A4923.CR3",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_027",
+      "url": "photos/635A4932.jpg",
+      "title": "635A4932",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_028",
+      "url": "photos/635A4941.jpg",
+      "title": "635A4941",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_029",
+      "url": "photos/635A4945.jpg",
+      "title": "635A4945",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_030",
+      "url": "photos/635A4946.jpg",
+      "title": "635A4946",
+      "date": "2026-05-30",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_031",
+      "url": "photos/635A4949.jpg",
+      "title": "635A4949",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_032",
+      "url": "photos/635A4950.jpg",
+      "title": "635A4950",
+      "date": "2026-05-30",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_033",
+      "url": "photos/635A4952.jpg",
+      "title": "635A4952",
+      "date": "2026-05-26",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_034",
+      "url": "photos/635A4959.CR3.jpg",
+      "title": "635A4959.CR3",
+      "date": "2026-05-26",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_035",
+      "url": "photos/635A4960.jpg",
+      "title": "635A4960",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_036",
+      "url": "photos/635A4968.jpg",
+      "title": "635A4968",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_037",
+      "url": "photos/635A4969.jpg",
+      "title": "635A4969",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_038",
+      "url": "photos/635A4970.jpg",
+      "title": "635A4970",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_039",
+      "url": "photos/635A4974.jpg",
+      "title": "635A4974",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_040",
+      "url": "photos/635A4987.jpg",
+      "title": "635A4987",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_041",
+      "url": "photos/635A4988.jpg",
+      "title": "635A4988",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_042",
+      "url": "photos/635A4993.jpg",
+      "title": "635A4993",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_043",
+      "url": "photos/635A4997.jpg",
+      "title": "635A4997",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_044",
+      "url": "photos/635A5008.jpg",
+      "title": "635A5008",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_045",
+      "url": "photos/635A5016.jpg",
+      "title": "635A5016",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_046",
+      "url": "photos/635A5042.jpg",
+      "title": "635A5042",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_047",
+      "url": "photos/635A5053.jpg",
+      "title": "635A5053",
+      "date": "2026-05-26",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_048",
+      "url": "photos/635A5058.jpg",
+      "title": "635A5058",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_049",
+      "url": "photos/635A5062.jpg",
+      "title": "635A5062",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_050",
+      "url": "photos/635A5075.jpg",
+      "title": "635A5075",
+      "date": "2026-06-01",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_051",
+      "url": "photos/635A5082.jpg",
+      "title": "635A5082",
+      "date": "2026-05-26",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_052",
+      "url": "photos/635A5083.jpg",
+      "title": "635A5083",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_053",
+      "url": "photos/635A5084.jpg",
+      "title": "635A5084",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    },
+    {
+      "id": "photo_054",
+      "url": "photos/9.jpg",
+      "title": "9",
+      "date": "2026-05-31",
+      "scene": "default",
+      "style": "romantic",
+      "dress": "white"
+    }
+  ]
+}

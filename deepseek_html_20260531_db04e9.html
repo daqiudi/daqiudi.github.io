@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>3D梦幻婚纱照片浏览 · 星空沉浸式体验</title>
+    <style>
+        :root {
+            --bg: #0a0a15;
+            --panel-bg: rgba(15, 15, 30, 0.8);
+            --text: #f0e6d8;
+            --gold: #d4a853;
+            --gold-light: #f0d078;
+            --accent: #c9975a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --border: 1px solid rgba(200, 160, 80, 0.35);
+            --radius: 16px;
+            --transition: 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Noto Serif SC', 'STSong', serif;
+            background: #03030a;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            touch-action: manipulation;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* 顶部导航 */
+        #top-nav {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 6px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 40px;
+            padding: 5px 10px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 96vw;
+        }
+        #top-nav button {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 12px;
+            padding: 8px 15px;
+            border-radius: 28px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        #top-nav button:hover,
+        #top-nav button.active {
+            background: rgba(212, 168, 83, 0.25);
+            color: var(--gold-light);
+            box-shadow: 0 0 22px rgba(212, 168, 83, 0.4);
+            transform: translateY(-2px);
+        }
+        .nav-separator {
+            width: 1px;
+            background: rgba(200, 160, 80, 0.4);
+            margin: 4px 6px;
+            border-radius: 1px;
+            align-self: stretch;
+        }
+
+        /* 底部分组标签 */
+        #group-tags {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 8px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 40px;
+            padding: 5px 12px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 96vw;
+        }
+        #group-tags button {
+            background: transparent;
+            border: 1px solid transparent;
+            color: #ccc;
+            font-size: 11px;
+            padding: 7px 14px;
+            border-radius: 22px;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            font-family: inherit;
+            letter-spacing: 0.5px;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        #group-tags button:hover,
+        #group-tags button.active {
+            border-color: var(--gold);
+            color: var(--gold-light);
+            background: rgba(212, 168, 83, 0.15);
+            box-shadow: 0 0 18px rgba(212, 168, 83, 0.3);
+        }
+        #group-tags button .count {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-left: 2px;
+        }
+
+        /* 侧边工具栏 */
+        #side-tools {
+            position: fixed;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        #side-tools button {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: var(--border);
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 17px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+        #side-tools button:hover {
+            border-color: var(--gold-light);
+            box-shadow: 0 0 24px rgba(212, 168, 83, 0.5);
+            transform: scale(1.08);
+            color: var(--gold-light);
+        }
+
+        /* 音乐控件 */
+        #music-controls {
+            position: fixed;
+            left: 14px;
+            bottom: 120px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 8px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+        }
+        #music-controls button {
+            background: transparent;
+            border: 1px solid rgba(200, 160, 80, 0.3);
+            color: var(--text);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 15px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+        }
+        #music-controls button:hover {
+            border-color: var(--gold-light);
+            box-shadow: 0 0 18px rgba(212, 168, 83, 0.5);
+            color: var(--gold-light);
+        }
+        #current-track-name {
+            color: var(--text);
+            font-size: 10px;
+            text-align: center;
+            max-width: 60px;
+            word-break: break-all;
+            line-height: 1.2;
+            opacity: 0.8;
+        }
+
+        /* 详情浮窗 */
+        #photo-detail {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 200;
+            background: var(--panel-bg);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border-radius: 22px;
+            border: var(--border);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8), 0 0 100px rgba(212, 168, 83, 0.3);
+            padding: 18px;
+            max-width: 90vw;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s;
+            opacity: 0;
+            pointer-events: none;
+        }
+        #photo-detail.open {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+            pointer-events: all;
+        }
+        #photo-detail img {
+            max-width: 100%;
+            max-height: 55vh;
+            border-radius: 14px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
+            object-fit: contain;
+            border: 3px solid rgba(200, 160, 80, 0.45);
+        }
+        .detail-info {
+            color: var(--text);
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .detail-nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .detail-nav button {
+            background: rgba(212, 168, 83, 0.2);
+            border: 1px solid rgba(200, 160, 80, 0.5);
+            color: var(--text);
+            padding: 8px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            outline: none;
+        }
+        .detail-nav button:hover {
+            background: rgba(212, 168, 83, 0.45);
+            box-shadow: 0 0 22px rgba(212, 168, 83, 0.5);
+            color: #fff;
+        }
+        #detail-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 190;
+            background: rgba(0, 0, 0, 0.65);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.35s;
+        }
+        #detail-overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* 上传按钮 */
+        #upload-btn {
+            position: fixed;
+            left: 14px;
+            bottom: 60px;
+            z-index: 100;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 8px 16px;
+            border: var(--border);
+            box-shadow: var(--shadow);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        #upload-btn:hover {
+            border-color: var(--gold-light);
+            box-shadow: 0 0 22px rgba(212, 168, 83, 0.5);
+            color: var(--gold-light);
+        }
+
+        @media (max-width: 768px) {
+            #top-nav {
+                top: 6px;
+                padding: 4px 8px;
+                gap: 3px;
+            }
+            #top-nav button {
+                font-size: 10px;
+                padding: 6px 11px;
+            }
+            #group-tags {
+                bottom: 12px;
+                padding: 4px 8px;
+                gap: 4px;
+            }
+            #group-tags button {
+                font-size: 9px;
+                padding: 5px 10px;
+            }
+            #side-tools button {
+                width: 34px;
+                height: 34px;
+                font-size: 14px;
+            }
+            #music-controls {
+                bottom: 100px;
+                left: 8px;
+            }
+            #upload-btn {
+                bottom: 50px;
+                left: 8px;
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div id="loading-indicator" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:300;color:#d4a853;font-size:16px;letter-spacing:2px;text-shadow:0 0 25px rgba(212,168,83,0.8);pointer-events:none;">✨ 正在加载梦幻婚纱照...</div>
+
+    <nav id="top-nav">
+        <button data-scene="church" class="active">⛪ 教堂</button>
+        <button data-scene="garden">🌸 花海</button>
+        <button data-scene="indoor">🏛️ 室内</button>
+        <button data-scene="beach">🌅 海边</button>
+        <span class="nav-separator"></span>
+        <button id="btn-autoplay">▶ 轮播</button>
+        <button id="btn-collection">💖 收藏</button>
+    </nav>
+
+    <div id="group-tags">
+        <button data-group="all" class="active">全部<span class="count">0</span></button>
+        <button data-group="church">教堂<span class="count">0</span></button>
+        <button data-group="garden">花海<span class="count">0</span></button>
+        <button data-group="indoor">室内<span class="count">0</span></button>
+        <button data-group="beach">海边<span class="count">0</span></button>
+    </div>
+
+    <div id="side-tools">
+        <button id="btn-fx-strength" title="特效强度">✨</button>
+        <button id="btn-fullscreen" title="全屏">⛶</button>
+        <button id="btn-reset-view" title="重置视角">🔄</button>
+    </div>
+
+    <div id="music-controls">
+        <button id="btn-music-toggle" title="播放/暂停">🎵</button>
+        <button id="btn-music-prev" title="上一首">⏮</button>
+        <button id="btn-music-next" title="下一首">⏭</button>
+        <div id="current-track-name">未播放</div>
+    </div>
+
+    <label id="upload-btn">
+        📁 上传照片
+        <input type="file" id="photo-upload-input" accept="image/*" multiple hidden>
+    </label>
+
+    <div id="detail-overlay"></div>
+    <div id="photo-detail">
+        <img id="detail-img" src="" alt="婚纱照详情" />
+        <div class="detail-info" id="detail-info"></div>
+        <div class="detail-nav">
+            <button id="detail-prev">◀ 上一张</button>
+            <button id="detail-fav">💖 收藏</button>
+            <button id="detail-next">下一张 ▶</button>
+            <button id="detail-close">✕ 关闭</button>
+        </div>
+    </div>
+    <div id="hint-text" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);z-index:90;color:rgba(240,230,210,0.55);font-size:10px;letter-spacing:1px;pointer-events:none;">🖱 拖拽旋转 | 滚轮缩放 | 点击照片查看详情 | 长按预览</div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // ==================== 全局状态 ====================
+        const STATE = {
+            currentScene: 'church',
+            currentGroup: 'all',
+            isAutoPlaying: false,
+            musicPlaying: false,
+            currentTrackIndex: 0,
+            fxStrength: 1.0,
+            favorites: new Set(),
+            detailPhotoIndex: -1,
+            filteredPhotoIndices: [],
+            isMobile: /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent),
+            longPressTimer: null,
+            hoveredPhoto: null,
+        };
+
+        try {
+            const saved = JSON.parse(localStorage.getItem('wedding_favorites_v2') || '[]');
+            STATE.favorites = new Set(saved);
+        } catch (e) {}
+
+        function saveFavorites() {
+            localStorage.setItem('wedding_favorites_v2', JSON.stringify([...STATE.favorites]));
+        }
+
+        // ==================== 照片路径配置（请替换为实际路径） ====================
+        const PHOTO_PATHS = {
+            church: [
+                'photos/635A4760.jpg', 'photos/635A4767.jpg', 'photos/635A4769.jpg',
+                'photos/635A4770.jpg', 'photos/635A4774.jpg', 'photos/635A4780.jpg'
+            ],
+            garden: [
+                'photos/635A4793.jpg', 'photos/635A4798.jpg', 'photos/635A4805.jpg',
+                'photos/635A4811.jpg', 'photos/635A4821.jpg', 'photos/635A4853.jpg'
+            ],
+            indoor: [
+                'photos/635A4866.jpg', 'photos/635A4869.jpg', 'photos/635A4876.jpg',
+                'photos/635A4878.jpg', 'photos/635A4910.jpg', 'photos/635A4932.jpg'
+            ],
+            beach: [
+                'photos/635A4941.jpg', 'photos/635A4945.jpg', 'photos/635A4949.jpg',
+                'photos/635A4960.jpg', 'photos/635A4968.jpg', 'photos/635A4969.jpg'
+            ]
+        };
+
+        // ==================== 音频配置 ====================
+        const AUDIO_TRACKS = [
+            { name: '浪漫华尔兹', src: 'audio/比初雪先来的是你.mp3' },
+            { name: '梦幻钢琴', src: 'audio/明天见.mp3' },
+            { name: '温馨弦乐', src: 'audio/愿你走过夜多长.mp3' }
+        ];
+
+        // ==================== 照片数据模型 ====================
+        const allPhotos = [];
+        let photoIdCounter = 0;
+
+        function createPhotoEntry(group, source, title = '') {
+            const id = photoIdCounter++;
+            return {
+                id,
+                group,
+                source, // 可以是URL或Canvas
+                title: title || `${group}照片 ${id+1}`,
+                description: '',
+                texture: null,
+                mesh: null,
+                glowMesh: null,
+                groupName: group,
+            };
+        }
+
+        // 初始化照片：尝试加载图片，失败则生成Canvas纹理
+        async function initPhotos() {
+            for (const [group, paths] of Object.entries(PHOTO_PATHS)) {
+                for (const path of paths) {
+                    const photo = createPhotoEntry(group, path, path.split('/').pop()?.replace('.jpg', '') || '');
+                    allPhotos.push(photo);
+                }
+            }
+            // 预加载纹理
+            await preloadTextures();
+            updateGroupCounts();
+        }
+
+        async function preloadTextures() {
+            const promises = allPhotos.map(async (photo) => {
+                if (typeof photo.source === 'string') {
+                    try {
+                        const texture = await loadImageTexture(photo.source);
+                        photo.texture = texture;
+                    } catch (e) {
+                        console.warn(`无法加载 ${photo.source}，使用生成纹理替代`);
+                        photo.texture = generateFallbackTexture(photo.id, photo.group);
+                    }
+                } else {
+                    // 上传的图片已经是纹理
+                    photo.texture = photo.source;
+                }
+            });
+            await Promise.all(promises);
+        }
+
+        function loadImageTexture(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    const texture = new THREE.Texture(img);
+                    texture.colorSpace = THREE.SRGBColorSpace;
+                    texture.minFilter = THREE.LinearMipmapLinearFilter;
+                    texture.magFilter = THREE.LinearFilter;
+                    texture.generateMipmaps = true;
+                    texture.needsUpdate = true;
+                    resolve(texture);
+                };
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        function generateFallbackTexture(id, group) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 720;
+            const ctx = canvas.getContext('2d');
+            const palettes = {
+                church: ['#faf8f5', '#e8dfd5', '#d4a853'],
+                garden: ['#fdf6f9', '#e8d5e0', '#e891a8'],
+                indoor: ['#f9f6f2', '#e0d5c8', '#b8956a'],
+                beach: ['#fdfaf6', '#e8dcc8', '#e8985e'],
+            };
+            const [bg, accent, detail] = palettes[group] || palettes['church'];
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = accent + '44';
+            for (let i = 0; i < 15; i++) {
+                ctx.beginPath();
+                ctx.arc(canvas.width * (0.2 + 0.6 * Math.random()), canvas.height * (0.3 + 0.4 * Math.random()),
+                    40 + 80 * Math.random(), 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.fillStyle = detail;
+            ctx.font = 'bold 30px "Georgia"';
+            ctx.textAlign = 'center';
+            ctx.fillText('婚纱照', canvas.width / 2, canvas.height / 2);
+            return new THREE.CanvasTexture(canvas);
+        }
+
+        // 更新分组计数
+        function updateGroupCounts() {
+            const counts = {};
+            allPhotos.forEach(p => {
+                counts[p.group] = (counts[p.group] || 0) + 1;
+            });
+            document.querySelectorAll('#group-tags button[data-group]').forEach(btn => {
+                const group = btn.dataset.group;
+                if (group === 'all') {
+                    btn.querySelector('.count').textContent = allPhotos.length;
+                } else {
+                    btn.querySelector('.count').textContent = counts[group] || 0;
+                }
+            });
+        }
+
+        // ==================== 上传照片处理 ====================
+        function handleFileUpload(files) {
+            for (const file of files) {
+                if (!file.type.startsWith('image/')) continue;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const texture = new THREE.Texture(img);
+                        texture.colorSpace = THREE.SRGBColorSpace;
+                        texture.needsUpdate = true;
+                        // 默认归入当前场景分组
+                        const group = STATE.currentScene;
+                        const photo = createPhotoEntry(group, texture, file.name);
+                        allPhotos.push(photo);
+                        addPhotoToWall(photo);
+                        updateGroupCounts();
+                        updatePhotoVisibility();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ==================== Three.js 初始化 ====================
+        const container = document.getElementById('canvas-container');
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        container.appendChild(renderer.domElement);
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x03030a);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.5, 120);
+        camera.position.set(0, 2.5, 14);
+        camera.lookAt(0, 0.5, 0);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.08;
+        controls.minDistance = 4;
+        controls.maxDistance = 25;
+        controls.maxPolarAngle = Math.PI * 0.78;
+        controls.minPolarAngle = 0.15;
+        controls.target.set(0, 0.5, 0);
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.3;
+        controls.update();
+
+        // 星空背景球
+        function createStarfield() {
+            const starsGeo = new THREE.BufferGeometry();
+            const starsCount = 1500;
+            const starsPositions = new Float32Array(starsCount * 3);
+            for (let i = 0; i < starsCount * 3; i += 3) {
+                const radius = 45 + Math.random() * 20;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.asin((Math.random() * 2) - 1);
+                starsPositions[i] = Math.cos(theta) * Math.cos(phi) * radius;
+                starsPositions[i + 1] = Math.sin(phi) * radius;
+                starsPositions[i + 2] = Math.sin(theta) * Math.cos(phi) * radius;
+            }
+            starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+            const starsMat = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.25,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                transparent: true,
+                opacity: 0.9,
+            });
+            const stars = new THREE.Points(starsGeo, starsMat);
+            stars.name = 'starfield';
+            scene.add(stars);
+            return stars;
+        }
+        const starfield = createStarfield();
+
+        // 光照
+        const ambientLight = new THREE.AmbientLight(0xffeedd, 1.0);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xfff5e8, 4.2);
+        sunLight.position.set(8, 15, 5);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 1024;
+        sunLight.shadow.mapSize.height = 1024;
+        sunLight.shadow.camera.near = 0.5;
+        sunLight.shadow.camera.far = 60;
+        sunLight.shadow.camera.left = -20;
+        sunLight.shadow.camera.right = 20;
+        sunLight.shadow.camera.top = 20;
+        sunLight.shadow.camera.bottom = -20;
+        scene.add(sunLight);
+        const fillLight = new THREE.DirectionalLight(0x8899cc, 1.2);
+        fillLight.position.set(-3, 3, -5);
+        scene.add(fillLight);
+
+        // 场景元素容器
+        const environmentGroup = new THREE.Group();
+        scene.add(environmentGroup);
+        const photoWallGroup = new THREE.Group();
+        scene.add(photoWallGroup);
+        const particlesGroup = new THREE.Group();
+        scene.add(particlesGroup);
+
+        // ==================== 照片墙构建（优化排布） ====================
+        function createPhotoWall() {
+            while (photoWallGroup.children.length > 0) {
+                const child = photoWallGroup.children[0];
+                if (child.material) {
+                    if (child.material.map) child.material.map.dispose();
+                    child.material.dispose();
+                }
+                if (child.geometry) child.geometry.dispose();
+                photoWallGroup.remove(child);
+            }
+            allPhotos.forEach(p => { p.mesh = null;
+                p.glowMesh = null; });
+
+            const total = allPhotos.length;
+            if (total === 0) return;
+
+            // 多层螺旋排布，避免重叠
+            const layers = 3;
+            const photosPerLayer = Math.ceil(total / layers);
+            const baseRadius = 7;
+            const heightRange = 5;
+
+            allPhotos.forEach((photo, index) => {
+                const layerIndex = Math.floor(index / photosPerLayer);
+                const posInLayer = index % photosPerLayer;
+                const angle = (posInLayer / photosPerLayer) * Math.PI * 2 + layerIndex * 0.5;
+                const radius = baseRadius + layerIndex * 1.8;
+                const x = Math.cos(angle) * radius;
+                const z = Math.sin(angle) * radius - 2;
+                const y = (posInLayer / photosPerLayer - 0.5) * heightRange + 1.2 + layerIndex * 0.8;
+
+                const photoWidth = 0.75;
+                const photoHeight = 1.05;
+                const geometry = new THREE.PlaneGeometry(photoWidth, photoHeight);
+                const material = new THREE.MeshStandardMaterial({
+                    map: photo.texture,
+                    roughness: 0.4,
+                    metalness: 0.05,
+                    side: THREE.DoubleSide,
+                });
+                const mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(x, y, z);
+                mesh.lookAt(new THREE.Vector3(0, y * 0.6, 0));
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.userData = {
+                    photoId: photo.id,
+                    originalPos: new THREE.Vector3(x, y, z),
+                    originalScale: 1,
+                    isPhoto: true,
+                };
+                photoWallGroup.add(mesh);
+                photo.mesh = mesh;
+
+                const glowGeo = new THREE.PlaneGeometry(photoWidth + 0.04, photoHeight + 0.04);
+                const glowMat = new THREE.MeshBasicMaterial({
+                    color: 0xd4a853,
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.1,
+                    depthWrite: false,
+                });
+                const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+                glowMesh.position.copy(mesh.position);
+                glowMesh.rotation.copy(mesh.rotation);
+                glowMesh.renderOrder = -1;
+                glowMesh.material.depthTest = true;
+                glowMesh.material.depthWrite = false;
+                glowMesh.userData = { isGlow: true, parentPhotoId: photo.id };
+                photoWallGroup.add(glowMesh);
+                photo.glowMesh = glowMesh;
+            });
+        }
+
+        function addPhotoToWall(photo) {
+            // 重新构建整个墙以保证排布
+            createPhotoWall();
+        }
+
+        // ==================== 场景环境 ====================
+        function buildEnvironment(type) {
+            while (environmentGroup.children.length > 0) {
+                const c = environmentGroup.children[0];
+                if (c.material) c.material.dispose();
+                if (c.geometry) c.geometry.dispose();
+                environmentGroup.remove(c);
+            }
+            if (type === 'church') {
+                const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshStandardMaterial({ color: 0x3a3530,
+                    roughness: 0.3 }));
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -4;
+                floor.receiveShadow = true;
+                environmentGroup.add(floor);
+                for (let i = -2; i <= 2; i++) {
+                    const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.3, 10, 16), new THREE
+                .MeshStandardMaterial({ color: 0xf5f0e8, roughness: 0.4 }));
+                    pillar.position.set(i * 2.5, 1, -6);
+                    pillar.castShadow = true;
+                    pillar.receiveShadow = true;
+                    environmentGroup.add(pillar);
+                }
+            } else if (type === 'garden') {
+                const grass = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshStandardMaterial({ color: 0x5a8a4a,
+                    roughness: 0.7 }));
+                grass.rotation.x = -Math.PI / 2;
+                grass.position.y = -3.5;
+                grass.receiveShadow = true;
+                environmentGroup.add(grass);
+                for (let i = 0; i < 150; i++) {
+                    const flower = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6), new THREE
+                .MeshStandardMaterial({ color: [0xff88aa, 0xffaacc, 0xffffff][Math.floor(Math.random() * 3)] }));
+                    flower.position.set((Math.random() - 0.5) * 12, -3.3, (Math.random() - 0.5) * 10);
+                    environmentGroup.add(flower);
+                }
+            } else if (type === 'indoor') {
+                const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), new THREE.MeshStandardMaterial({ color: 0x4a3c30,
+                    roughness: 0.2 }));
+                floor.rotation.x = -Math.PI / 2;
+                floor.position.y = -3;
+                floor.receiveShadow = true;
+                environmentGroup.add(floor);
+                const wall = new THREE.Mesh(new THREE.PlaneGeometry(16, 8), new THREE.MeshStandardMaterial({ color: 0x3a2f28,
+                    roughness: 0.5 }));
+                wall.position.set(0, 1, -7);
+                environmentGroup.add(wall);
+            } else if (type === 'beach') {
+                const sand = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshStandardMaterial({ color: 0xe8d5b0,
+                    roughness: 0.8 }));
+                sand.rotation.x = -Math.PI / 2;
+                sand.position.y = -3.5;
+                sand.receiveShadow = true;
+                environmentGroup.add(sand);
+                const sea = new THREE.Mesh(new THREE.PlaneGeometry(30, 15), new THREE.MeshStandardMaterial({ color: 0x3388bb,
+                    roughness: 0.15, transparent: true, opacity: 0.8 }));
+                sea.rotation.x = -Math.PI / 2;
+                sea.position.set(0, -3.3, 6);
+                environmentGroup.add(sea);
+            }
+            updateSceneLighting(type);
+        }
+
+        function updateSceneLighting(type) {
+            if (type === 'church') ambientLight.intensity = 1.0;
+            else if (type === 'garden') ambientLight.intensity = 1.4;
+            else if (type === 'indoor') ambientLight.intensity = 0.8;
+            else if (type === 'beach') ambientLight.intensity = 1.3;
+        }
+
+        function createParticles(type) {
+            while (particlesGroup.children.length > 0) {
+                const c = particlesGroup.children[0];
+                if (c.material) c.material.dispose();
+                if (c.geometry) c.geometry.dispose();
+                particlesGroup.remove(c);
+            }
+            const count = STATE.isMobile ? 120 : 350;
+            const pos = new Float32Array(count * 3);
+            for (let i = 0; i < count * 3; i += 3) {
+                pos[i] = (Math.random() - 0.5) * 18;
+                pos[i + 1] = Math.random() * 9 - 2;
+                pos[i + 2] = (Math.random() - 0.5) * 16;
+            }
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+            const mat = new THREE.PointsMaterial({
+                size: 0.07,
+                color: type === 'garden' ? 0xffaacc : 0xd4a853,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false,
+                opacity: 0.6 * STATE.fxStrength,
+            });
+            particlesGroup.add(new THREE.Points(geo, mat));
+        }
+
+        function switchScene(type) {
+            STATE.currentScene = type;
+            buildEnvironment(type);
+            createParticles(type);
+            document.querySelectorAll('#top-nav button[data-scene]').forEach(b => b.classList.toggle('active', b
+                .dataset.scene === type));
+        }
+
+        // ==================== 照片可见性 ====================
+        function updatePhotoVisibility() {
+            allPhotos.forEach(p => {
+                const visible = STATE.currentGroup === 'all' || p.group === STATE.currentGroup;
+                if (p.mesh) p.mesh.visible = visible;
+                if (p.glowMesh) p.glowMesh.visible = visible;
+            });
+            STATE.filteredPhotoIndices = allPhotos
+                .filter(p => STATE.currentGroup === 'all' || p.group === STATE.currentGroup)
+                .map(p => p.id);
+        }
+
+        // ==================== 详情浮窗 ====================
+        function openPhotoDetail(photoId) {
+            const idx = STATE.filteredPhotoIndices.indexOf(photoId);
+            if (idx === -1) return;
+            STATE.detailPhotoIndex = idx;
+            showDetailPhoto();
+            document.getElementById('photo-detail').classList.add('open');
+            document.getElementById('detail-overlay').classList.add('show');
+            controls.autoRotate = false;
+        }
+
+        function closePhotoDetail() {
+            document.getElementById('photo-detail').classList.remove('open');
+            document.getElementById('detail-overlay').classList.remove('show');
+            STATE.detailPhotoIndex = -1;
+            controls.autoRotate = !STATE.isAutoPlaying;
+        }
+
+        function showDetailPhoto() {
+            const filtered = STATE.filteredPhotoIndices;
+            if (filtered.length === 0) return;
+            const photo = allPhotos[filtered[STATE.detailPhotoIndex]];
+            if (!photo) return;
+            const imgEl = document.getElementById('detail-img');
+            if (photo.texture && photo.texture.image) {
+                imgEl.src = photo.texture.image.src || photo.texture.image.toDataURL();
+            }
+            document.getElementById('detail-info').textContent =
+                `${photo.title} ${STATE.favorites.has(photo.id) ? '💖' : ''}`;
+            document.getElementById('detail-fav').textContent = STATE.favorites.has(photo.id) ? '💖 取消收藏' : '💖 收藏';
+        }
+
+        function navigateDetail(dir) {
+            const len = STATE.filteredPhotoIndices.length;
+            STATE.detailPhotoIndex = (STATE.detailPhotoIndex + dir + len) % len;
+            showDetailPhoto();
+        }
+
+        function toggleFavorite(photoId) {
+            if (STATE.favorites.has(photoId)) STATE.favorites.delete(photoId);
+            else STATE.favorites.add(photoId);
+            saveFavorites();
+            if (STATE.detailPhotoIndex >= 0) showDetailPhoto();
+        }
+
+        // ==================== 自动轮播 ====================
+        let autoPlayTimer = null;
+        let autoPlayIdx = 0;
+
+        function startAutoPlay() {
+            if (STATE.isAutoPlaying) return;
+            STATE.isAutoPlaying = true;
+            controls.autoRotate = false;
+            document.getElementById('btn-autoplay').textContent = '⏸ 停止';
+            autoPlayIdx = 0;
+            runAutoStep();
+        }
+
+        function stopAutoPlay() {
+            STATE.isAutoPlaying = false;
+            controls.autoRotate = true;
+            document.getElementById('btn-autoplay').textContent = '▶ 轮播';
+            if (autoPlayTimer) clearTimeout(autoPlayTimer);
+        }
+
+        function runAutoStep() {
+            if (!STATE.isAutoPlaying) return;
+            const filtered = STATE.filteredPhotoIndices;
+            if (filtered.length === 0) {
+                autoPlayTimer = setTimeout(runAutoStep, 2000);
+                return;
+            }
+            const photo = allPhotos[filtered[autoPlayIdx % filtered.length]];
+            if (photo && photo.mesh) {
+                const target = photo.mesh.position.clone();
+                animateCamera(target.clone().add(new THREE.Vector3(0, 0.5, 3)), target, 1200);
+                highlightPhoto(photo);
+            }
+            autoPlayIdx++;
+            autoPlayTimer = setTimeout(runAutoStep, 3000);
+        }
+
+        function animateCamera(targetPos, lookAt, duration) {
+            const startPos = camera.position.clone();
+            const startLook = controls.target.clone();
+            const startTime = performance.now();
+
+            function step(now) {
+                const t = Math.min((now - startTime) / duration, 1);
+                const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+                camera.position.lerpVectors(startPos, targetPos, ease);
+                controls.target.lerpVectors(startLook, lookAt, ease);
+                if (t < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function highlightPhoto(photo) {
+            if (!photo.mesh) return;
+            const orig = photo.mesh.scale.x;
+            photo.mesh.scale.setScalar(orig * 1.25);
+            if (photo.glowMesh) photo.glowMesh.material.opacity = 0.6;
+            setTimeout(() => {
+                if (photo.mesh) photo.mesh.scale.setScalar(orig);
+                if (photo.glowMesh) photo.glowMesh.material.opacity = 0.1;
+            }, 1500);
+        }
+
+        // ==================== 音乐控制 ====================
+        let audioElement = null;
+
+        function initAudio() {
+            audioElement = new Audio();
+            audioElement.loop = false;
+            audioElement.volume = 0.4;
+            loadTrack(STATE.currentTrackIndex);
+        }
+
+        function loadTrack(index) {
+            if (!audioElement || index >= AUDIO_TRACKS.length) return;
+            STATE.currentTrackIndex = index;
+            audioElement.src = AUDIO_TRACKS[index].src;
+            document.getElementById('current-track-name').textContent = AUDIO_TRACKS[index].name;
+            if (STATE.musicPlaying) audioElement.play().catch(() => {});
+        }
+
+        function toggleMusic() {
+            if (!audioElement) initAudio();
+            STATE.musicPlaying = !STATE.musicPlaying;
+            if (STATE.musicPlaying) audioElement.play().catch(() => {});
+            else audioElement.pause();
+            document.getElementById('btn-music-toggle').textContent = STATE.musicPlaying ? '⏸' : '🎵';
+        }
+
+        function nextTrack() {
+            STATE.currentTrackIndex = (STATE.currentTrackIndex + 1) % AUDIO_TRACKS.length;
+            loadTrack(STATE.currentTrackIndex);
+            if (STATE.musicPlaying) audioElement.play().catch(() => {});
+        }
+
+        function prevTrack() {
+            STATE.currentTrackIndex = (STATE.currentTrackIndex - 1 + AUDIO_TRACKS.length) % AUDIO_TRACKS.length;
+            loadTrack(STATE.currentTrackIndex);
+            if (STATE.musicPlaying) audioElement.play().catch(() => {});
+        }
+
+        // ==================== 事件绑定 ====================
+        document.getElementById('btn-music-toggle').addEventListener('click', toggleMusic);
+        document.getElementById('btn-music-prev').addEventListener('click', prevTrack);
+        document.getElementById('btn-music-next').addEventListener('click', nextTrack);
+        document.getElementById('btn-autoplay').addEventListener('click', () => STATE.isAutoPlaying ? stopAutoPlay() :
+            startAutoPlay());
+        document.getElementById('btn-collection').addEventListener('click', () => {
+            STATE.currentGroup = STATE.currentGroup === 'favorites' ? 'all' : 'favorites';
+            document.querySelectorAll('#group-tags button').forEach(b => b.classList.toggle('active', b.dataset
+                .group === STATE.currentGroup));
+            updatePhotoVisibility();
+        });
+        document.querySelectorAll('#top-nav button[data-scene]').forEach(b => b.addEventListener('click', () => switchScene(b
+            .dataset.scene)));
+        document.querySelectorAll('#group-tags button[data-group]').forEach(b => b.addEventListener('click', () => {
+            STATE.currentGroup = b.dataset.group;
+            document.querySelectorAll('#group-tags button').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            updatePhotoVisibility();
+        }));
+        document.getElementById('btn-reset-view').addEventListener('click', () => {
+            animateCamera(new THREE.Vector3(0, 2.5, 14), new THREE.Vector3(0, 0.5, 0), 1000);
+        });
+        document.getElementById('btn-fullscreen').addEventListener('click', () => {
+            if (!document.fullscreenElement) document.body.requestFullscreen();
+            else document.exitFullscreen();
+        });
+        document.getElementById('detail-close').addEventListener('click', closePhotoDetail);
+        document.getElementById('detail-overlay').addEventListener('click', closePhotoDetail);
+        document.getElementById('detail-prev').addEventListener('click', () => navigateDetail(-1));
+        document.getElementById('detail-next').addEventListener('click', () => navigateDetail(1));
+        document.getElementById('detail-fav').addEventListener('click', () => {
+            const id = STATE.filteredPhotoIndices[STATE.detailPhotoIndex];
+            if (id !== undefined) toggleFavorite(id);
+        });
+        document.getElementById('photo-upload-input').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFileUpload(e.target.files);
+                e.target.value = '';
+            }
+        });
+
+        // 交互
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let hoveredId = null;
+        window.addEventListener('mousemove', (e) => {
+            if (STATE.detailPhotoIndex >= 0) return;
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const meshes = allPhotos.filter(p => p.mesh?.visible).map(p => p.mesh);
+            const intersects = raycaster.intersectObjects(meshes);
+            if (hoveredId !== null && (!intersects.length || intersects[0].object.userData.photoId !== hoveredId)) {
+                const prev = allPhotos[hoveredId];
+                if (prev?.mesh) {
+                    prev.mesh.scale.setScalar(1);
+                    if (prev.glowMesh) prev.glowMesh.material.opacity = 0.1;
+                }
+                hoveredId = null;
+                document.body.style.cursor = 'grab';
+            }
+            if (intersects.length > 0 && intersects[0].object.userData.isPhoto) {
+                const id = intersects[0].object.userData.photoId;
+                if (hoveredId !== id) {
+                    hoveredId = id;
+                    const photo = allPhotos[id];
+                    if (photo?.mesh) {
+                        photo.mesh.scale.setScalar(1.12);
+                        if (photo.glowMesh) photo.glowMesh.material.opacity = 0.5;
+                    }
+                    document.body.style.cursor = 'pointer';
+                }
+            }
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target.closest('button') || e.target.closest('#photo-detail') || STATE.detailPhotoIndex >= 0) return;
+            if (hoveredId !== null) openPhotoDetail(hoveredId);
+        });
+
+        // 响应式
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            if (starfield) starfield.rotation.y += 0.0001;
+            renderer.render(scene, camera);
+        }
+
+        // 启动
+        async function boot() {
+            await initPhotos();
+            createPhotoWall();
+            buildEnvironment(STATE.currentScene);
+            createParticles(STATE.currentScene);
+            updatePhotoVisibility();
+            document.getElementById('loading-indicator').style.display = 'none';
+            initAudio();
+            animate();
+        }
+        boot().catch(err => console.error(err));
+    </script>
+</body>
+</html>

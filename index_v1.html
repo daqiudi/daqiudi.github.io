@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D婚纱照片浏览 - 婚礼回忆</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/photo-wall.css">
+    <link rel="stylesheet" href="css/upload.css">
+    <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+    <!-- 加载界面 -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <h1 class="loading-title">婚礼回忆</h1>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">加载中...</p>
+        </div>
+    </div>
+
+    <!-- Three.js画布容器 -->
+    <div id="canvas-container"></div>
+
+    <!-- 主题标题显示 -->
+    <div id="wedding-title" class="wedding-title">
+        <h1 class="title-main">新郎 & 新娘</h1>
+        <p class="title-sub">我们的美好时光</p>
+    </div>
+
+    <!-- 3D悬浮导航栏 -->
+    <nav id="main-navigation" class="main-navigation">
+        <div class="nav-brand">
+            <span class="brand-icon">💍</span>
+        </div>
+        
+        <div class="nav-sections">
+            <!-- 分组筛选 -->
+            <div class="nav-group">
+                <button class="nav-btn" data-action="bg-starry" title="梦幻星空">
+                    <span class="btn-icon">🌌</span>
+                    <span class="btn-label">星空</span>
+                </button>
+                <button class="nav-btn" data-action="bg-pink" title="浪漫粉颜">
+                    <span class="btn-icon">💗</span>
+                    <span class="btn-label">粉颜</span>
+                </button>
+                <button class="nav-btn" data-action="bg-white" title="神圣淡白">
+                    <span class="btn-icon">✨</span>
+                    <span class="btn-label">淡白</span>
+                </button>
+            </div>
+
+            <div class="nav-group">
+                <button class="nav-btn" data-action="group-all" title="全部照片">
+                    <span class="btn-icon">📷</span>
+                    <span class="btn-label">全部</span>
+                </button>
+                <button class="nav-btn" data-action="group-favorites" title="收藏">
+                    <span class="btn-icon">❤️</span>
+                    <span class="btn-label">收藏</span>
+                </button>
+            </div>
+
+            <!-- 浏览模式 -->
+            <div class="nav-group">
+                <button class="nav-btn" data-action="mode-browse" title="浏览模式">
+                    <span class="btn-icon">👁️</span>
+                    <span class="btn-label">浏览</span>
+                </button>
+                <button class="nav-btn" data-action="mode-play" title="播放模式">
+                    <span class="btn-icon">▶️</span>
+                    <span class="btn-label">播放</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="nav-actions">
+            <button class="nav-btn action-btn" data-action="upload" title="上传照片">
+                <span class="btn-icon">📤</span>
+            </button>
+            <button class="nav-btn action-btn" data-action="toggle-music" title="背景音乐">
+                <span class="btn-icon">🎵</span>
+            </button>
+            <button class="nav-btn action-btn" data-action="settings" title="设置">
+                <span class="btn-icon">⚙️</span>
+            </button>
+            <button class="nav-btn action-btn" data-action="fullscreen" title="全屏">
+                <span class="btn-icon">⛶</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 照片分组侧边栏 -->
+    <aside id="photo-groups" class="photo-groups">
+        <div class="groups-header">
+            <h3>照片分组</h3>
+            <button class="toggle-groups" data-action="toggle-groups">▼</button>
+        </div>
+        <div class="groups-list">
+            <div class="group-item active" data-group="all">
+                <span class="group-icon">📸</span>
+                <span class="group-name">全部照片</span>
+                <span class="group-count">0</span>
+            </div>
+            <div class="group-item" data-group="style-romantic">
+                <span class="group-icon">💕</span>
+                <span class="group-name">浪漫风格</span>
+                <span class="group-count">0</span>
+            </div>
+            <div class="group-item" data-group="style-elegant">
+                <span class="group-icon">✨</span>
+                <span class="group-name">优雅风格</span>
+                <span class="group-count">0</span>
+            </div>
+            <div class="group-item" data-group="location-indoor">
+                <span class="group-icon">🏠</span>
+                <span class="group-name">室内场景</span>
+                <span class="group-count">0</span>
+            </div>
+            <div class="group-item" data-group="location-outdoor">
+                <span class="group-icon">🌳</span>
+                <span class="group-name">户外场景</span>
+                <span class="group-count">0</span>
+            </div>
+            <div class="group-item" data-group="dress-white">
+                <span class="group-icon">👗</span>
+                <span class="group-name">白色婚纱</span>
+                <span class="group-count">0</span>
+            </div>
+            <div class="group-item" data-group="dress-colorful">
+                <span class="group-icon">👘</span>
+                <span class="group-name">彩色礼服</span>
+                <span class="group-count">0</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 照片详情浮窗 -->
+    <div id="photo-modal" class="photo-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" data-action="close-modal">×</button>
+            <div class="modal-image-container">
+                <img id="modal-image" src="" alt="照片详情">
+                <div class="modal-nav modal-prev" data-action="prev-photo">‹</div>
+                <div class="modal-nav modal-next" data-action="next-photo">›</div>
+            </div>
+            <div class="modal-info">
+                <div class="info-header">
+                    <h3 id="modal-title">照片信息</h3>
+                    <button class="favorite-btn" data-action="toggle-favorite">
+                        <span class="heart-icon">♡</span>
+                    </button>
+                </div>
+                <div class="info-details">
+                    <p><strong>拍摄日期：</strong><span id="modal-date">-</span></p>
+                    <p><strong>场景类型：</strong><span id="modal-scene">-</span></p>
+                    <p><strong>风格标签：</strong><span id="modal-tags">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 上传对话框 -->
+    <div id="upload-dialog" class="upload-dialog">
+        <div class="dialog-overlay"></div>
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h2>上传婚纱照片</h2>
+                <button class="dialog-close" data-action="close-upload">×</button>
+            </div>
+            <div class="upload-area" id="upload-area">
+                <div class="upload-placeholder">
+                    <div class="upload-icon">📤</div>
+                    <p>拖拽照片到此处或点击选择文件</p>
+                    <p class="upload-hint">支持 JPG、PNG、WEBP 格式，单次最多50张</p>
+                    <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+                    <button class="upload-btn" data-action="select-files">选择文件</button>
+                </div>
+                <div class="upload-preview" id="upload-preview"></div>
+            </div>
+            <div class="upload-progress" id="upload-progress" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <p class="progress-text">上传中... 0%</p>
+            </div>
+            <div class="dialog-footer">
+                <button class="btn-secondary" data-action="cancel-upload">取消</button>
+                <button class="btn-primary" data-action="confirm-upload" disabled>确认上传</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置面板 -->
+    <div id="settings-panel" class="settings-panel">
+        <div class="settings-header">
+            <h2>设置</h2>
+            <button class="settings-close" data-action="close-settings">×</button>
+        </div>
+        <div class="settings-content">
+            <!-- 主题标题设置 -->
+            <div class="setting-section">
+                <h3>主题标题</h3>
+                <div class="setting-item">
+                    <label>新郎姓名</label>
+                    <input type="text" id="groom-name" placeholder="输入新郎姓名">
+                </div>
+                <div class="setting-item">
+                    <label>新娘姓名</label>
+                    <input type="text" id="bride-name" placeholder="输入新娘姓名">
+                </div>
+                <div class="setting-item">
+                    <label>副标题</label>
+                    <input type="text" id="subtitle" placeholder="输入副标题">
+                </div>
+                <div class="setting-item">
+                    <label>字体大小</label>
+                    <input type="range" id="title-size" min="20" max="80" value="48">
+                </div>
+                <div class="setting-item">
+                    <label>文字颜色</label>
+                    <input type="color" id="title-color" value="#ffffff">
+                </div>
+            </div>
+
+            <!-- 特效设置 -->
+            <div class="setting-section">
+                <h3>背景音乐</h3>
+                <div class="setting-item">
+                    <label>音乐开关</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="bg-music-toggle">
+                        <label for="bg-music-toggle"></label>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label>音乐音量</label>
+                    <input type="range" id="music-volume" min="0" max="100" value="50">
+                </div>
+                <div class="setting-item">
+                    <label>当前播放</label>
+                    <p id="current-song-name" style="opacity: 0.7; font-size: 0.9rem;">未播放</p>
+                </div>
+            </div>
+
+            <!-- 特效设置 -->
+            <div class="setting-section">
+                <h3>特效设置</h3>
+                <div class="setting-item">
+                    <label>粒子效果强度</label>
+                    <input type="range" id="particle-intensity" min="0" max="100" value="70">
+                </div>
+            </div>
+
+            <!-- 性能设置 -->
+            <div class="setting-section">
+                <h3>性能优化</h3>
+                <div class="setting-item">
+                    <label>渲染质量</label>
+                    <select id="render-quality">
+                        <option value="low">低</option>
+                        <option value="medium" selected>中</option>
+                        <option value="high">高</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label>自动旋转速度</label>
+                    <input type="range" id="rotation-speed" min="0" max="100" value="30">
+                </div>
+            </div>
+        </div>
+        <div class="settings-footer">
+            <button class="btn-primary" data-action="save-settings">保存设置</button>
+        </div>
+    </div>
+
+    <!-- 播放控制栏 -->
+    <div id="playback-controls" class="playback-controls" style="display: none;">
+        <button class="control-btn" data-action="play-pause">⏸️</button>
+        <button class="control-btn" data-action="prev-slide">⏮️</button>
+        <button class="control-btn" data-action="next-slide">⏭️</button>
+        <div class="playback-progress">
+            <div class="progress-track">
+                <div class="progress-current"></div>
+            </div>
+            <span class="time-display">0 / 0</span>
+        </div>
+        <select id="transition-effect">
+            <option value="fade">淡入淡出</option>
+            <option value="blur">模糊转场</option>
+            <option value="flash">闪白</option>
+            <option value="zoom">缩放</option>
+        </select>
+    </div>
+
+    <!-- 提示信息 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 脚本引入 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/scene-manager.js"></script>
+    <script src="js/photo-manager.js"></script>
+    <script src="js/particle-system.js"></script>
+    <script src="js/audio-manager.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/upload-handler.js"></script>
+    <script src="js/settings-manager.js"></script>
+    <script src="js/playback-controller.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
